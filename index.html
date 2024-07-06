@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+
+    <div id="mydiv"></div>
+<style>
+    .actionitem{
+        padding: 15px; 
+        border: solid 1px black; 
+        background-color: gray;
+        flex-grow: 1;
+        text-align: center;
+        border-radius: 24px
+    }
+    .numbers{
+        padding: 15px; 
+        border: solid 1px white;
+        flex-grow: 1;
+        text-align: center;
+        border-radius: 24px;
+
+    }
+</style>
+    <script type="text/babel">
+
+           
+
+        function App(){
+            const [result, setResult] = React.useState(0);
+            const [action, setAction] = React.useState(null);
+            const [firstNum, setFirstNum] = React.useState(null);
+            const [secondNum, setSecondNum] = React.useState(null);
+
+
+
+
+
+            function NumberClick(Numbb){
+                console.log("Number clicked:", Numbb)
+                if(!firstNum && !action && !result){ // first number clicked is the first number
+                        setFirstNum(Numbb)
+                }
+                else if(firstNum && !action && !result){  // user is adding a first number longer than 1 digit
+                        setFirstNum(Number(`${firstNum}${Numbb}`))
+                }
+                else if(result && !action){ // user clicked on number before specify operation, so it restarts.
+                        setAction(null);
+                        setResult(null);
+                        setFirstNum(Numbb);
+                }
+                else if(result && action && !firstNum){//continued math chain with result and second number
+                        setFirstNum(result);
+                        setSecondNum(Numbb);
+                }
+                else if(result && action && firstNum){//continued math chain with result and secondnumber typing more than 1 digit.
+                        setFirstNum(result);
+                        setSecondNum(Number(`${secondNum}${Numbb}`));
+                }
+                else if(firstNum && action && !secondNum){ // first number is set and action as well so it sets as second number.
+                        setSecondNum(Numbb)
+                }
+                else if(firstNum && action && secondNum){ // first number is set and action as well ,user types more than 1 digit.
+                        setSecondNum(Number(`${secondNum}${Numbb}`))
+                }
+                    
+            }
+
+            function ActionClick(act){
+                console.log("Action clicked:", act)
+
+
+                if(!action){
+                  setAction(act)
+                }
+
+            
+            }
+
+
+
+          
+            function ResetBtn(){
+                    setFirstNum(null);
+                    setSecondNum(null);
+                    setAction(null);
+                    setResult(null);
+            }
+            
+
+
+            function EnterBtn(){
+
+
+
+                if(firstNum && action && secondNum){
+
+                    switch(action){
+                        case "x":
+                            setResult(firstNum * secondNum);
+                            break;
+                        case "./.":
+                            setResult(firstNum / secondNum);
+                            break;
+                        case "+":
+                            setResult(firstNum + secondNum);
+                            break;
+                        case "-": 
+                            setResult(firstNum - secondNum);
+                            break;
+
+                    }
+                    setAction(null);
+                    setSecondNum(null);
+                    setFirstNum(null);
+
+
+                }else{
+                    console.log("ERROR PERFORMING OPERATION")
+                }
+            }
+
+
+            return(
+               
+                <div Style="border-radius: 60px; background-color: #000000; color: white; border: 2px solid orange; width: 100%; max-width: 400px; margin-left: auto; margin-right: auto; padding: 30px;">
+                    <h1 Style="text-align: center;">Calculator</h1>
+                    <p Style="font-size: 20px">RESULT</p>
+                    <p Style="font-size: 30px; background-color: white; color: black; padding: 10px 20px; border-radius: 24px">{result}</p>
+                    <p Style="font-size: 30px">{firstNum} {action} {secondNum}</p>
+                   
+                    <div Style="display: flex; flex-direction:row; gap: 20px; font-size: 30px; font-weight: bold; width: 100%;">
+                        <div className="actionitem" onClick={()=> ActionClick("x")} >X</div>
+                        <div className="actionitem" onClick={()=> ActionClick("./.")}  >./.</div>
+                        <div className="actionitem" onClick={()=> ActionClick("+")}  >+</div>
+                        <div className="actionitem"  onClick={()=> ActionClick("-")} >-</div>
+                    </div>
+
+                    <div Style="font-size: 30px; margin: 30px 0px; display: flex; flex-direction: column; gap: 20px;">
+                        <div Style="display: flex; flex-direction: row; gap: 20px; width: 100%;"> 
+                            <div onClick={()=> NumberClick(1)} className="numbers">1</div>
+                            <div onClick={()=> NumberClick(2)} className="numbers">2</div>
+                            <div onClick={()=> NumberClick(3)}  className="numbers">3</div>
+                        </div>
+                        <div  Style="display: flex; flex-direction: row; gap: 20px">
+                            <div onClick={()=> NumberClick(4)}  className="numbers">4</div>
+                            <div onClick={()=> NumberClick(5)}  className="numbers">5</div>
+                            <div onClick={()=> NumberClick(6)} className="numbers">6</div>
+                        </div>
+                        <div  Style="display: flex; flex-direction: row; gap: 20px">
+                            <div onClick={()=> NumberClick(7)}  className="numbers">7</div>
+                            <div onClick={()=> NumberClick(8)} className="numbers">8</div>
+                            <div onClick={()=> NumberClick(9)} className="numbers">9</div>
+                        </div>
+                        <div  Style="display: flex; flex-direction: row; gap: 20px"> 
+                            <div onClick={()=> NumberClick(0)}  className="numbers">0</div>
+                        </div>
+                       
+                    </div>
+
+
+
+                    <div Style="display: flex; flex-direction: row; gap: 20px; width: 100%">
+                        <div Style="padding: 10px 20px; background-color: gray; width: 100px; border-radius: 24px; text-align: center; flex-grow: 1" onClick={()=> EnterBtn()}>
+                         Enter
+                        </div>
+                        <div Style="padding: 10px 20px; background-color: gray; width: 100px; border-radius: 24px; text-align: center; flex-grow: 1" onClick={()=> ResetBtn()}>
+                            Reset
+                        </div>
+                    </div>
+                    
+                </div>
+               
+            )
+
+
+        }
+
+
+
+      const container = document.getElementById('mydiv');
+      const root = ReactDOM.createRoot(container);
+      root.render(<App/>)
+    </script>
+
+  </body>
+</html>
